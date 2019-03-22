@@ -45,3 +45,9 @@ rules:
   - migrate-operator
   verbs:
   - "update"
+- apiGroups:
+  - original.com
+  resources:
+  - "*"
+  verbs:
+  - "*"
