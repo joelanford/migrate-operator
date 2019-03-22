@@ -3,7 +3,7 @@ package app
 import (
 	"context"
 
-	originalv1alpha1 "github.com/joelanford/migrate-operator/pkg/apis/original/v1alpha1"
+	migratedv1 "github.com/joelanford/migrate-operator/pkg/apis/migrated/v1"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -47,7 +47,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	}
 
 	// Watch for changes to primary resource App
-	err = c.Watch(&source.Kind{Type: &originalv1alpha1.App{}}, &handler.EnqueueRequestForObject{})
+	err = c.Watch(&source.Kind{Type: &migratedv1.App{}}, &handler.EnqueueRequestForObject{})
 	if err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	// Watch for changes to secondary resource Pods and requeue the owner App
 	err = c.Watch(&source.Kind{Type: &corev1.Pod{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
-		OwnerType:    &originalv1alpha1.App{},
+		OwnerType:    &migratedv1.App{},
 	})
 	if err != nil {
 		return err
@@ -86,7 +86,7 @@ func (r *ReconcileApp) Reconcile(request reconcile.Request) (reconcile.Result, e
 	reqLogger := log.WithValues("Request.Namespace", request.Namespace, "Request.Name", request.Name)
 
 	// Fetch the App instance
-	instance := &originalv1alpha1.App{}
+	instance := &migratedv1.App{}
 	err := r.client.Get(context.TODO(), request.NamespacedName, instance)
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -131,7 +131,7 @@ func (r *ReconcileApp) Reconcile(request reconcile.Request) (reconcile.Result, e
 }
 
 // newPodForCR returns a busybox pod with the same name/namespace as the cr
-func newPodForCR(cr *originalv1alpha1.App) *corev1.Pod {
+func newPodForCR(cr *migratedv1.App) *corev1.Pod {
 	labels := map[string]string{
 		"app": cr.Name,
 	}

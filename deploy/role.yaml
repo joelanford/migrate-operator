@@ -51,3 +51,9 @@ rules:
   - "*"
   verbs:
   - "*"
+- apiGroups:
+  - migrated.com
+  resources:
+  - "*"
+  verbs:
+  - "*"

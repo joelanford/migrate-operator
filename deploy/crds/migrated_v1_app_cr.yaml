@@ -1,0 +1,7 @@
+apiVersion: migrated.com/v1
+kind: App
+metadata:
+  name: example-app-migrated-v1
+spec:
+  # Add fields here
+  size: 3
